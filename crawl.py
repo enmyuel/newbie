@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-
+import re
 mapo = []
 
 # Seoul
@@ -17,10 +17,21 @@ select.select_by_visible_text('서울시 마포구')
 search_button = driver.find_element_by_class_name("btn_sear")
 search_button.click()
 
-# 1번째 가맹점 크롤링 후 출력
-franchisee = driver.find_elements_by_xpath("/html/body/div/form/div[2]/table/tbody/tr[1]/td[1]")
+#크롤링 후 결과 가다듬고 출력
+franchisee = driver.find_elements_by_xpath("/html/body/div/form/div[2]/table/tbody")
 
-for value in franchisee:
-    mapo.append(value.text.split('\n'))
+for i in franchisee:
+    mapo.append(i.text.split('\n'))
+for i in mapo:
+    for j in range(len(i)):
+        if j % 3 == 1:
+            y = re.findall(" \d.*", mapo[0][j])
+            if len(y) != 0:
+                mapo[0][j] = y[0].lstrip()
+            else:
+                del mapo[0][-1]
 
-print(mapo[0][0])
+for i in mapo:
+    for j in range(len(i)):
+        if j % 3 != 2:
+            print(mapo[0][j])

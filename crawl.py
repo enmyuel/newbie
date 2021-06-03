@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import re
-mapo = []
 
 # Seoul
 URL = "http://dreamtree.shinhancard.com/waf/opendatam"
@@ -19,7 +18,7 @@ search_button.click()
 
 #크롤링 후 결과 가다듬고 출력
 franchisee = driver.find_elements_by_xpath("/html/body/div/form/div[2]/table/tbody")
-
+mapo = []
 for i in franchisee:
     mapo.append(i.text.split('\n'))
 for i in mapo:
@@ -31,7 +30,18 @@ for i in mapo:
             else:
                 del mapo[0][-1]
 
+dat = []
 for i in mapo:
     for j in range(len(i)):
         if j % 3 != 2:
-            print(mapo[0][j])
+            k = mapo[0][j].find(".")
+            temp = mapo[0][j]
+            temp = temp[k+1:]
+            dat.append(temp)
+
+driver.close()
+
+file = open("data.txt", 'w')
+for i in dat:
+    file.write(i + "\n")
+file.close()
